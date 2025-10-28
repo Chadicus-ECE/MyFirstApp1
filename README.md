@@ -1,0 +1,2 @@
+This is a test app that will implicitly and explicitly start the second activity.
+From the second activity screen you will see a button to return to the main activity as well as a list of five challenges regarding mobile software engineering. 
