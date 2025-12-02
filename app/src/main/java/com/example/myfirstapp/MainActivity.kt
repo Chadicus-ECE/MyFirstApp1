@@ -1,6 +1,7 @@
 package com.example.myfirstapp
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,32 +15,80 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.myfirstapp.ui.theme.MyFirstAppTheme
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        private const val PERMISSION_MSE412 = "com.example.myfirstapp.MSE412"
+        private const val REQUEST_CODE_MSE412 = 412
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 🔐 Request custom dangerous permission at startup
+        requestMse412PermissionIfNeeded()
 
         setContent {
             MyFirstAppTheme {
                 MainScreen(
                     onExplicitClick = {
-                        // Explicit intent to SecondActivity
-                        val intent = Intent(this, SecondActivity::class.java)
-                        startActivity(intent)
+                        if (hasMse412Permission()) {
+                            val intent = Intent(this, SecondActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            // Optional: show a "permission denied" message
+                        }
                     },
                     onImplicitClick = {
-                        // Implicit intent that matches SecondActivity's intent-filter
-                        val intent = Intent("com.example.myfirstapp.OPEN_CHALLENGES")
-                        startActivity(intent)
+                        if (hasMse412Permission()) {
+                            val intent = Intent("com.example.myfirstapp.OPEN_CHALLENGES")
+                            startActivity(intent)
+                        } else {
+                            // Optional: notify user
+                        }
                     },
                     onViewImageClick = {
-                        // Open ThirdActivity (camera / image view)
                         val intent = Intent(this, ThirdActivity::class.java)
                         startActivity(intent)
                     }
                 )
             }
+        }
+    }
+
+    // ✔ Check if permission is granted
+    private fun hasMse412Permission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            PERMISSION_MSE412
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // ✔ Ask for permission only if needed
+    private fun requestMse412PermissionIfNeeded() {
+        if (!hasMse412Permission()) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(PERMISSION_MSE412),
+                REQUEST_CODE_MSE412
+            )
+        }
+    }
+
+    // ✔ Handle the result (optional but recommended)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_CODE_MSE412) {
+            // You may add a Toast here if you want confirmation
         }
     }
 }
@@ -59,20 +108,12 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Name and ID
-            Text(
-                text = "Full Name: Connor Nadgwick",
-                fontSize = 22.sp
-            )
-            Text(
-                text = "Student ID: 123456",   // <- replace with your real ID
-                fontSize = 20.sp,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+
+            Text(text = "Full Name: Connor Nadgwick", fontSize = 22.sp)
+            Text(text = "Student ID: 123456", fontSize = 20.sp, modifier = Modifier.padding(top = 8.dp))
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Start second activity explicitly
             Button(
                 onClick = onExplicitClick,
                 modifier = Modifier.fillMaxWidth()
@@ -82,7 +123,6 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Start second activity implicitly
             Button(
                 onClick = onImplicitClick,
                 modifier = Modifier.fillMaxWidth()
@@ -92,7 +132,6 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Go to image / camera activity
             Button(
                 onClick = onViewImageClick,
                 modifier = Modifier.fillMaxWidth()

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Optional: app can use any camera but does not require one -->
+    <!-- 1) Define custom dangerous permission -->
+    <permission
+        android:name="com.example.myfirstapp.MSE412"
+        android:protectionLevel="dangerous" />
+
+    <!-- 2) Declare that this app uses that permission -->
+    <uses-permission android:name="com.example.myfirstapp.MSE412" />
+
+    <!-- Existing camera feature -->
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="false" />
@@ -24,21 +32,21 @@
             </intent-filter>
         </activity>
 
-        <!-- SECOND ACTIVITY (EXPLICIT + IMPLICIT INTENTS) -->
+        <!-- SECOND ACTIVITY: exported + protected by custom permission -->
         <activity
             android:name=".SecondActivity"
-            android:exported="true">   <!-- REQUIRED because of intent-filter -->
+            android:exported="true"
+            android:permission="com.example.myfirstapp.MSE412">
             <intent-filter>
                 <action android:name="com.example.myfirstapp.OPEN_CHALLENGES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <!-- THIRD ACTIVITY (Camera Screen) -->
+        <!-- THIRD ACTIVITY -->
         <activity
             android:name=".ThirdActivity"
-            android:exported="false" />  <!-- No intent-filter, so either value works -->
-
+            android:exported="false" />
     </application>
 
 </manifest>
