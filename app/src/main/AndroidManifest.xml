@@ -1,34 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Optional: app can use any camera but does not require one -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApp">
+
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.MyFirstApp">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".SecondActivity"
-            android:exported="true">
+        <!-- SECOND ACTIVITY (EXPLICIT + IMPLICIT INTENTS) -->
+        <activity
+            android:name=".SecondActivity"
+            android:exported="true">   <!-- REQUIRED because of intent-filter -->
             <intent-filter>
                 <action android:name="com.example.myfirstapp.OPEN_CHALLENGES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- THIRD ACTIVITY (Camera Screen) -->
+        <activity
+            android:name=".ThirdActivity"
+            android:exported="false" />  <!-- No intent-filter, so either value works -->
 
     </application>
 

@@ -5,7 +5,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,13 +18,17 @@ import com.example.myfirstapp.ui.theme.MyFirstAppTheme
 class SecondActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MyFirstAppTheme {
-                SecondScreen(onMainClick = {
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    startActivity(intent)
-                })
+                SecondScreen(
+                    onMainClick = {
+                        // Launch MainActivity (avoid stacking)
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        startActivity(intent)
+                    }
+                )
             }
         }
     }
@@ -36,30 +42,43 @@ fun SecondScreen(onMainClick: () -> Unit) {
                 .fillMaxSize()
                 .padding(padding)
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.Start
         ) {
+
+            // Title
             Text(
                 text = "Mobile Software Engineering Challenges:",
                 fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
+            // List of challenges (use any 5+)
             val challenges = listOf(
-                "1. Managing software updates for constantly changing hardware",
-                "2. Making optimized programs to run using minimal hardware",
-                "3. Optimizing battery and memory usage",
-                "4. Handling multiple screen sizes",
-                "5. Making sure any explicit activities are secure and not overlapping"
+                "1. Handling device fragmentation",
+                "2. Managing battery and performance constraints",
+                "3. Securing data storage and network communication",
+                "4. Supporting offline mode and data sync",
+                "5. Ensuring seamless UI/UX across devices",
+                "6. Handling slow and intermittent networks",
+                "7. Managing background work efficiently"
             )
 
-            challenges.forEach { challenge ->
-                Text(text = challenge, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+            for (item in challenges) {
+                Text(
+                    text = item,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Button(onClick = onMainClick, modifier = Modifier.fillMaxWidth()) {
-                Text("Main Activity")
+            // Return to MainActivity
+            Button(
+                onClick = onMainClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Main Activity")
             }
         }
     }
